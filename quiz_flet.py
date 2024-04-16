@@ -60,45 +60,129 @@ ligas = {
 # Função principal que inicia o programa
 def main(page: ft.Page):
     page.title = 'QUIZ - CHUTE CERTEIRO'  # Título da página
-    page.bgcolor = "#7586a4"  # Cor de fundo da página
+    page.bgcolor = ft.colors.BLACK  # Cor de fundo da página
     page.window_maximized = True  # Maximizar a janela
     page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
+    page.scroll = ft.ScrollMode.AUTO
     solicitar_nome(page)  # Chamar a função para solicitar o nome do usuário
 
 # Função para solicitar o nome do usuário
 def solicitar_nome(page, *_):
-    # Limpar a janela principal
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    # Define a cor de fundo da página como preto
+    page.bgcolor = ft.colors.BLACK
 
-    # Função para lidar com o clique do botão
+    # Função interna que é chamada quando o botão é clicado
     def btn_click(e):
-        if not txt_name.value:  # Se o campo de texto estiver vazio
-            txt_name.error_text = "Por favor insira seu nome!"  # Mostrar mensagem de erro
-            page.update()  # Atualizar a página
-        else:  # Se o campo de texto não estiver vazio
-            global nome_usuario  # Declarar a variável global
+        # Verifica se o campo de texto está vazio
+        if not txt_name.value:
+            # Se estiver vazio, exibe uma mensagem de erro
+            txt_name.error_text = "Por favor insira seu nome!"
+            # Atualiza a página para mostrar a mensagem de erro
+            page.update()
+        else:
+            # Se o campo de texto não estiver vazio, declara a variável global nome_usuario
+            global nome_usuario
+            # Armazena o nome do usuário na variável global
+            nome_usuario = txt_name.value.title()
+            # Chama a função mostrar_ligas
+            mostrar_ligas(page)
 
-            nome_usuario = txt_name.value.title()  # Armazenar o nome do usuário
-            mostrar_ligas(page)  # Chamar a função para mostrar as ligas
+    # Cria um campo de texto para o usuário inserir seu nome
+    txt_name = ft.TextField(label="Seu nome!", text_align='center', width='300')
 
-    # Adicionando elementos à página
-    page.add(ft.Image(src="/images/logo.png", height=300, width=300,))  # Adicionar imagem
-    page.add(  
-        ft.Row([ft.Text(value="CHUTE CERTEIRO!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)  # Adicionar texto
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="QUIZ - CHUTE CERTEIRO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
     )
 
-    txt_name = ft.TextField(label="Por favor informe seu nome!", text_align='center', width='300')  # Criar campo de texto
+    # Cria um container para o campo de texto e o botão
+    nome = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            txt_name
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.ElevatedButton(
+                                text='value',
+                                content=ft.Column([
+                                ft.Text(value='Confirmar', size=30, color="black"),]),
+                                on_click=btn_click)
+                        )
+                    ],
+                )
+            ]
+        )
+    )
 
-    # Adicionar campo de texto e botão à página
-    page.add(txt_name, ft.ElevatedButton(content=ft.Column([
-                ft.Text(value='Confirmar', size=30, color="black"),
-                #alignment=ft.MainAxisAlignment.CENTER,
-            ]),on_click=btn_click))
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1000,
+        margin=ft.margin.all(30),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            columns=12,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                nome,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
+
 
 # Função para mostrar as ligas disponíveis
 def mostrar_ligas(page):
-    page.clean()  # Limpa a página antes de adicionar novos elementos
+
+    # Define a cor de fundo da página como preto
+    page.clean()
 
     # Função interna para lidar com o clique do botão
     def on_button_click(e, liga_id):
@@ -106,52 +190,115 @@ def mostrar_ligas(page):
         liga_selecionada = liga_id  # Armazena o ID da liga selecionada na variável global
         mostrar_anos(page)  # Chama a função mostrar_anos para atualizar a página com os anos disponíveis para a liga selecionada
 
-    # Adiciona um texto no topo da página
-    page.add(ft.Row([ft.Text(value="Escolha o campeonato!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER))
-
     # Lista para armazenar as linhas de botões
     linhas_de_botoes = []
-    botoes_temp = []  # Lista temporária para armazenar os botões antes de adicioná-los à linha
 
     # Itera sobre todas as ligas disponíveis
     for nome_liga, dados_liga in ligas.items():
         # Cria um botão personalizado com a imagem da liga e o nome da liga
-        botao_liga = ft.ElevatedButton(
-            text=nome_liga,
-            content=ft.Row([
-                ft.Image(src=dados_liga["URL"], width=80, height=80,),  # Adiciona a imagem da liga ao botão
-                ft.Text(nome_liga, color="black", size= 20)  # Adiciona o nome da liga ao botão
-            ]),
-            on_click=lambda e, liga_id=dados_liga["ID"]: on_button_click(e, liga_id),  # Define a ação do botão para chamar a função on_button_click com o ID da liga
-            width=300,
+        botao_liga = ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    ft.ElevatedButton(
+                        content=ft.Row([
+                            ft.Image(src=dados_liga['URL'], width=80, height=80),
+                            ft.Text(value=nome_liga,size=30, color='black')
+                        ]),
+                        on_click=lambda e, liga_id=dados_liga["ID"]: on_button_click(e, liga_id),
+                        width=400
+                    )
+                )
+            ]
         )
-        # Adiciona o botão à lista temporária
-        botoes_temp.append(botao_liga)
+        
+        linhas_de_botoes.append(botao_liga)
 
-        # Se tiver dois botões na lista temporária, cria uma nova linha e limpa a lista
-        if len(botoes_temp) == 2:
-            linhas_de_botoes.append(ft.Row(botoes_temp, alignment=ft.MainAxisAlignment.CENTER))  # Adiciona a linha de botões à lista de linhas
-            botoes_temp = []  # Limpa a lista temporária de botões
+    def botoes_liga():
+         # Adiciona todas as linhas de botões à página
+        return linhas_de_botoes # Adiciona a linha de botões à página
 
-    # Adiciona a última linha se houver botões restantes
-    if botoes_temp:
-        linhas_de_botoes.append(ft.Row(botoes_temp))  # Adiciona a linha de botões à lista de linhas
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="ESCOLHA O CAMPEONATO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
 
-    # Adiciona todas as linhas de botões à página
-    for linha in linhas_de_botoes:
-        page.add(linha)  # Adiciona a linha de botões à página
-    
-    page.update()  # Atualiza a página para mostrar os novos elementos
+    # Cria um container para o campo de texto e o botão
+    escolhe_campeonato = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *botoes_liga()
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_campeonato,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para mostrar os anos
 def mostrar_anos(page):
     # Limpa a página
     page.clean()
-
-    # Adiciona um texto na página
-    page.add(  
-        ft.Row([ft.Text(value="Escolha o ano!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
 
     # Função para lidar com o clique no botão
     def on_button_click(e, ano):
@@ -163,39 +310,110 @@ def mostrar_anos(page):
 
     # Lista para armazenar as linhas de botões
     linhas_de_botoes = []
-    # Lista temporária para armazenar os botões
-    botoes_temp = []
 
     # Define os anos
     anos = list(range(2016, 2024))
     # Itera sobre os anos
     for ano in anos:
-        # Cria um botão para cada ano
-        botao_ano = ft.ElevatedButton(
-            # Define a ação do clique no botão
-            on_click=lambda e, a= ano: on_button_click(e, a),
-            width=300,
-            # Define o conteúdo do botão
-            content=ft.Column([
-                ft.Text(value=ano, size=30, color="black"),
-                #alignment=ft.MainAxisAlignment.CENTER,
-            ])
+        # Cria um botão para cada ano   
+        botao_ano = ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    ft.ElevatedButton(
+                        content=ft.Column([
+                            ft.Text(value=ano,size=30, color='black',text_align='center'),
+                        ]),
+                        on_click=lambda e, a= ano: on_button_click(e, ano),
+                        width=200
+                    )
+                )
+            ]
         )
+        
         # Adiciona o botão à lista temporária
-        botoes_temp.append(botao_ano)
+        linhas_de_botoes.append(botao_ano)
 
-        # Se tiver dois botões na lista temporária, cria uma nova linha e limpa a lista
-        if len(botoes_temp) == 2:
-            linhas_de_botoes.append(ft.Row(botoes_temp, alignment=ft.MainAxisAlignment.CENTER))
-            botoes_temp = []
+    def botoes_ano():
+         # Adiciona todas as linhas de botões à página
+        return linhas_de_botoes # Adiciona a linha de botões à página
     
-    # Adiciona a última linha se houver botões restantes
-    if botoes_temp:
-        linhas_de_botoes.append(ft.Row(botoes_temp))
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="ESCOLHA O ANO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
 
-    # Adiciona todas as linhas de botões à página
-    for linha in linhas_de_botoes:
-        page.add(linha)
+    # Cria um container para o campo de texto e o botão
+    escolhe_ano = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *botoes_ano()
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_ano,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para iniciar o quiz na interface gráfica
 def start_quiz(page, category):  
@@ -220,7 +438,7 @@ def start_quiz(page, category):
     verificar_liga()
 
     # Chamada da função que exibe a tela do quiz
-    tela_quiz(page)
+    mostrar_quiz(page)
 # Função para buscar dados da API de futebol
 def api_futebol():
     # Verifica a categoria do quiz e define a busca na API
@@ -303,12 +521,16 @@ def generate_quiz(category):
     random.shuffle(random_names)
     random.shuffle(random_names)
     
+    # Embaralha as respostas
+    random.shuffle(data['response'])
+    
     return correct_name, random_names
 
 # Definindo a função 'verificar_liga'
 def verificar_liga():
     # Declarando 'chave_correspondente' como uma variável global
     global chave_correspondente
+    global url_liga
 
     # Iterando sobre cada item no dicionário 'ligas'
     for liga, info in ligas.items():
@@ -316,6 +538,8 @@ def verificar_liga():
         if info["ID"] == liga_selecionada:
             # Se corresponder, atribuímos o nome da liga à 'chave_correspondente'
             chave_correspondente = liga
+            # Atribuímos a URL da liga à 'url_liga'
+            url_liga = info['URL']
             # E interrompemos o loop
             break
         else:
@@ -330,11 +554,27 @@ def check_answer(page, user_choice, correct_answer):
 
     # Limpando a Interface
     page.clean()
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
     
+    def texto_tela(page, imagem:bool, texto: str,  *_: str):
+        page.clean()
+        page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
+        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        page.scroll = ft.Page.scroll
+        if imagem:
+            page.add(ft.Image(src=f"/images/logo.png", height=300, width=300))
+            
+        layout = ft.Container(content=ft.Text(texto, color='White', size=40))
+        page.add(layout)
+
+        if _:
+            for resto in _:
+                page.add(ft.Container(content=ft.Text(resto, color='White', size=40)))    
+        
     # Adicionando um texto na interface
-    page.add(  
-        ft.Row([ft.Text(value="Verificando sua resposta aguarde!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    texto_tela(page, False, "Verificando sua resposta aguarde!")
+
     # Aguardando 2 segundos
     time.sleep(2)
 
@@ -348,16 +588,14 @@ def check_answer(page, user_choice, correct_answer):
         # Chamando a função 'manipulacao_txt' com a resposta correta
         manipulacao_txt(user_choice, 'correta')
         # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value="Sua resposta está correta!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+        texto_tela(page, False,"Sua resposta está correta!")
+
     else:
         # Chamando a função 'manipulacao_txt' com a resposta errada
         manipulacao_txt(user_choice, f'errada a resposta correta era {correct_answer}')
         # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Sua resposta está incorreta! A resposta era {correct_answer}!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+        texto_tela(page, f"Sua resposta está incorreta! A resposta era {correct_answer}!")
+
     # Aguardando 2 segundos
     time.sleep(2)
 
@@ -371,38 +609,33 @@ def check_answer(page, user_choice, correct_answer):
         page.clean()
 
         # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
-        with open('resposta_quiz.txt', 'a') as adicionar:
+        with open('/log/resposta_quiz.txt', 'a') as adicionar:
             adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} quiz\\n')
-
-        # Adicionando uma imagem na interface
-        page.add(ft.Image(src=f"/images/logo.png", height=300, width=300))
-
-        # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Fim do Quiz!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
-        # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Você respondeu todas as categorias do quiz!", color="black",size=30),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    
+        texto1 = "Fim do Quiz!"
+        texto2 = "Você respondeu todas as categorias"
         # Verificando se o usuário acertou mais de uma questão
         if acertos >1:
+            texto3= f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando um texto na interface
-            page.add(  
-        ft.Row([ft.Text(value=f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="black",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    #         page.add(  
+    #     ft.Row([ft.Text(value=f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
+    # )
         else:
             # Adicionando um texto na interface
-            page.add(  
-        ft.Row([ft.Text(value=f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="black",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+            texto3= f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto_tela(page, True, texto1, texto2, texto3)
+    #         page.add(  
+    #     ft.Row([ft.Text(value=f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
+    # )
         # Aguardando 5 segundos
         time.sleep(5)
         # Fechando a janela
         page.window_close()
         
-# Definindo a função 'tela_quiz'
-def tela_quiz(page):
+# Definindo a função 'mostrar_quiz'
+def mostrar_quiz(page):
     # Função para lidar com o clique do botão
     def on_button_click(e, jogador):
         global jogador_selecionado
@@ -413,48 +646,164 @@ def tela_quiz(page):
         
     # Limpar a interface
     page.clean()
-
+    page.scroll = ft.ScrollMode.AUTO
     # Verifica a categoria do quiz e define o texto da pergunta
     if categoria_quiz == 'artilheiro':
-        texto_quiz = f'Quem é o jogador com mais gol no(a) {chave_correspondente} de {ano_selecionado}?'
+        texto_quiz = f'Artilheiro de {ano_selecionado}?'
+        texto_quiz2 = ""
     elif categoria_quiz == 'assistências':
-        texto_quiz = f'Quem é o jogador com mais assistências no(a) {chave_correspondente} de {ano_selecionado}?'
+        texto_quiz = f'Lider de assistências'
+        texto_quiz2 = f' de {ano_selecionado}?'
     else:
-        texto_quiz = f'Quem é o jogador com mais cartões amarelos no(a) {chave_correspondente} de {ano_selecionado}?'
+        texto_quiz = f'Lider de cartões '
+        texto_quiz2 = f'amarelos de {ano_selecionado}?'
+    
+    if texto_quiz2 == "":
+        mostrar_texto = ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value=texto_quiz, size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),
+    else:
+        mostrar_texto = ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value=texto_quiz, size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value=texto_quiz2, size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),
 
-    # Embaralha as respostas
-    random.shuffle(data['response'])
-    
-    # Adiciona o texto do quiz à página
-    page.add(ft.Row([ft.Text(value=texto_quiz, color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER))
-    
-    # Para cada jogador na resposta
+    # Lista para armazenar as linhas de botões
+    linhas_de_jogadores = []
+
+    # Itera sobre todas as ligas disponíveis
     for player in data['response']:
-        # Se o nome do jogador estiver nos nomes aleatórios
         if player['player']['name'] in random_names:
-            # Cria um botão personalizado com a imagem do jogador
-            botao_jogador = ft.ElevatedButton(
-            text=player['player']['name'],
-            content=ft.Row([
-                # Adiciona a imagem do jogador ao botão
-                ft.Image(src=player['player']['photo'], width=85, height=85,),
-                # Adiciona o nome do jogador ao botão
-                ft.Text(player['player']['name'], size=30, color='black'),
-            ]),
-            # Define a ação do clique do botão
-            on_click=lambda e, jogador=player['player']['name']: on_button_click(e, jogador),
-            width=350,
-            height=100
+        # Cria um botão personalizado com a imagem do jogador e o nome dele
+            botao_jogador = ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
+                controls=[
+                    ft.Container(
+                        ft.ElevatedButton(
+                            content=ft.Row([
+                                ft.Image(src=player['player']['photo'], width=85, height=85),
+                                ft.Text(player['player']['name'], size=30, color='black')
+                            ]),
+                            on_click=lambda e, jogador=player['player']['name']: on_button_click(e, jogador),
+                            width=350,
+                            height=100
+                        )
+                    )
+                ]
             )
-            # Adiciona o botão à página
-            page.add(botao_jogador)
+        
+            linhas_de_jogadores.append(botao_jogador)
+            
+    def botoes_jogador():
+        return linhas_de_jogadores # Adiciona a linha de botões à página
+
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *mostrar_texto
+                        ]
+                    )
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src=url_liga,
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
+
+    # Cria um container para o campo de texto e o botão
+    escolhe_jogador = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *botoes_jogador()
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_jogador,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
+            
+            
 
 # Definindo a função 'confirmacao'
 def confirmacao(page):
     
-    # Definindo a função 'retorna_quiz' que chama a função 'tela_quiz'
+    # Definindo a função 'retorna_quiz' que chama a função 'mostrar_quiz'
     def retorna_quiz(e):
-        tela_quiz(page)
+        mostrar_quiz(page)
 
     # Definindo a função 'confirmado' que chama a função 'check_answer'
     def confirmado(e):
@@ -464,28 +813,118 @@ def confirmacao(page):
     page.clean()
     
     # Adiciona um texto à página
-    page.add(  
-        ft.Row([ft.Text(value="Você tem certeza da sua resposta ?", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    mostrar_texto = ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value="Você tem certeza", size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value="da sua resposta ?", size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),
     
-    # Adiciona botões à página
-    page.add(ft.Row([
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *mostrar_texto
+                        ]
+                    )
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
+
+    # Cria um container para o campo de texto e o botão
+    escolhe_corfimacao = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            ft.Row([
         # Botão 'Sim' que chama a função 'confirmado' quando clicado
-        ft.ElevatedButton(content=ft.Column([
-            ft.Text(value='Sim', size=30, color="black"),
-            ]),        
-            on_click=confirmado),
+                                ft.ElevatedButton(content=ft.Column([
+                                    ft.Text(value='Sim', size=30, color="black"),
+                                    ]),        
+                                on_click=confirmado),
         # Botão 'Não' que chama a função 'retorna_quiz' quando clicado
-        ft.ElevatedButton(content=ft.Column([
-            ft.Text(value='Não', size=30, color="black"),
-            ]),        
-            on_click=retorna_quiz),
-            ],alignment= ft.MainAxisAlignment.CENTER,))
+                                ft.ElevatedButton(content=ft.Column([
+                                    ft.Text(value='Não', size=30, color="black"),
+                                    ]),        
+                                    on_click=retorna_quiz),
+                                ],alignment= ft.MainAxisAlignment.CENTER,)
+                            ]
+                        )
+                    )
+                ]
+            )
+        )
+    
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_corfimacao,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open('resposta_quiz.txt', 'a') as adicionar:
+    with open('/log/resposta_quiz.txt', 'a') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')
@@ -500,11 +939,11 @@ def manipulacao_txt(user_choice, resultado):
 
 # Tentando criar o arquivo 'resposta_quiz.txt', se ele ainda não existir
 try:
-    with open('resposta_quiz.txt', 'x'):
+    with open('/log/resposta_quiz.txt', 'x'):
         pass
     
 except FileExistsError:
     pass
 
 # Iniciando o aplicativo com a função 'main' como alvo
-ft.app(target=main, assets_dir="assets")
+ft.app(target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
