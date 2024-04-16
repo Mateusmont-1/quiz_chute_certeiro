@@ -18,9 +18,6 @@ Este projeto foi feito no curso do SENAI - Ipiranga-SP referente a [Python](http
 - [Time](https://docs.python.org/3/library/time.html)
 - [Random](https://docs.python.org/pt-br/3/library/random.html)
 - [Json](https://docs.python.org/3/library/json.html)
-- [time](https://docs.python.org/3/library/time.html)
-- [os](https://docs.python.org/3/library/os.html)
-- [datetime](https://docs.python.org/3/library/datetime.html)
 
 ## Participantes do Projeto
 
