@@ -60,7 +60,7 @@ ligas = {
 # Função principal que inicia o programa
 def main(page: ft.Page):
     page.title = 'QUIZ - CHUTE CERTEIRO'  # Título da página
-    page.bgcolor = "#7586a4"  # Cor de fundo da página
+    page.bgcolor = ft.colors.BLACK  # Cor de fundo da página
     page.window_maximized = True  # Maximizar a janela
     page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
@@ -538,8 +538,8 @@ def verificar_liga():
         if info["ID"] == liga_selecionada:
             # Se corresponder, atribuímos o nome da liga à 'chave_correspondente'
             chave_correspondente = liga
+            # Atribuímos a URL da liga à 'url_liga'
             url_liga = info['URL']
-            print(url_liga)
             # E interrompemos o loop
             break
         else:
@@ -554,11 +554,27 @@ def check_answer(page, user_choice, correct_answer):
 
     # Limpando a Interface
     page.clean()
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
     
+    def texto_tela(page, imagem:bool, texto: str,  *_: str):
+        page.clean()
+        page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
+        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        page.scroll = ft.Page.scroll
+        if imagem:
+            page.add(ft.Image(src=f"/images/logo.png", height=300, width=300))
+            
+        layout = ft.Container(content=ft.Text(texto, color='White', size=40))
+        page.add(layout)
+
+        if _:
+            for resto in _:
+                page.add(ft.Container(content=ft.Text(resto, color='White', size=40)))    
+        
     # Adicionando um texto na interface
-    page.add(  
-        ft.Row([ft.Text(value="Verificando sua resposta aguarde!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    texto_tela(page, False, "Verificando sua resposta aguarde!")
+
     # Aguardando 2 segundos
     time.sleep(2)
 
@@ -572,16 +588,14 @@ def check_answer(page, user_choice, correct_answer):
         # Chamando a função 'manipulacao_txt' com a resposta correta
         manipulacao_txt(user_choice, 'correta')
         # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value="Sua resposta está correta!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+        texto_tela(page, False,"Sua resposta está correta!")
+
     else:
         # Chamando a função 'manipulacao_txt' com a resposta errada
         manipulacao_txt(user_choice, f'errada a resposta correta era {correct_answer}')
         # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Sua resposta está incorreta! A resposta era {correct_answer}!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+        texto_tela(page, f"Sua resposta está incorreta! A resposta era {correct_answer}!")
+
     # Aguardando 2 segundos
     time.sleep(2)
 
@@ -595,31 +609,26 @@ def check_answer(page, user_choice, correct_answer):
         page.clean()
 
         # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
-        with open('resposta_quiz.txt', 'a') as adicionar:
+        with open('/log/resposta_quiz.txt', 'a') as adicionar:
             adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} quiz\\n')
-
-        # Adicionando uma imagem na interface
-        page.add(ft.Image(src=f"/images/logo.png", height=300, width=300))
-
-        # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Fim do Quiz!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
-        # Adicionando um texto na interface
-        page.add(  
-        ft.Row([ft.Text(value=f"Você respondeu todas as categorias do quiz!", color="black",size=30),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    
+        texto1 = "Fim do Quiz!"
+        texto2 = "Você respondeu todas as categorias"
         # Verificando se o usuário acertou mais de uma questão
         if acertos >1:
+            texto3= f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando um texto na interface
-            page.add(  
-        ft.Row([ft.Text(value=f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="black",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    #         page.add(  
+    #     ft.Row([ft.Text(value=f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
+    # )
         else:
             # Adicionando um texto na interface
-            page.add(  
-        ft.Row([ft.Text(value=f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="black",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+            texto3= f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto_tela(page, True, texto1, texto2, texto3)
+    #         page.add(  
+    #     ft.Row([ft.Text(value=f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
+    # )
         # Aguardando 5 segundos
         time.sleep(5)
         # Fechando a janela
@@ -637,7 +646,7 @@ def mostrar_quiz(page):
         
     # Limpar a interface
     page.clean()
-
+    page.scroll = ft.ScrollMode.AUTO
     # Verifica a categoria do quiz e define o texto da pergunta
     if categoria_quiz == 'artilheiro':
         texto_quiz = f'Artilheiro de {ano_selecionado}?'
@@ -915,7 +924,7 @@ def confirmacao(page):
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open('resposta_quiz.txt', 'a') as adicionar:
+    with open('/log/resposta_quiz.txt', 'a') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')
@@ -930,7 +939,7 @@ def manipulacao_txt(user_choice, resultado):
 
 # Tentando criar o arquivo 'resposta_quiz.txt', se ele ainda não existir
 try:
-    with open('resposta_quiz.txt', 'x'):
+    with open('/log/resposta_quiz.txt', 'x'):
         pass
     
 except FileExistsError:
