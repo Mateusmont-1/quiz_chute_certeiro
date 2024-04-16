@@ -804,23 +804,113 @@ def confirmacao(page):
     page.clean()
     
     # Adiciona um texto à página
-    page.add(  
-        ft.Row([ft.Text(value="Você tem certeza da sua resposta ?", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    mostrar_texto = ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value="Você tem certeza", size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            content=ft.Row([
+                                ft.Text(value="da sua resposta ?", size= 40, color="white"),
+                            ])  
+                        )
+                    ]
+                ),
     
-    # Adiciona botões à página
-    page.add(ft.Row([
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *mostrar_texto
+                        ]
+                    )
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
+
+    # Cria um container para o campo de texto e o botão
+    escolhe_corfimacao = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            ft.Row([
         # Botão 'Sim' que chama a função 'confirmado' quando clicado
-        ft.ElevatedButton(content=ft.Column([
-            ft.Text(value='Sim', size=30, color="black"),
-            ]),        
-            on_click=confirmado),
+                                ft.ElevatedButton(content=ft.Column([
+                                    ft.Text(value='Sim', size=30, color="black"),
+                                    ]),        
+                                on_click=confirmado),
         # Botão 'Não' que chama a função 'retorna_quiz' quando clicado
-        ft.ElevatedButton(content=ft.Column([
-            ft.Text(value='Não', size=30, color="black"),
-            ]),        
-            on_click=retorna_quiz),
-            ],alignment= ft.MainAxisAlignment.CENTER,))
+                                ft.ElevatedButton(content=ft.Column([
+                                    ft.Text(value='Não', size=30, color="black"),
+                                    ]),        
+                                    on_click=retorna_quiz),
+                                ],alignment= ft.MainAxisAlignment.CENTER,)
+                            ]
+                        )
+                    )
+                ]
+            )
+        )
+    
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_corfimacao,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
