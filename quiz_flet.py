@@ -91,8 +91,8 @@ def solicitar_nome(page, *_):
     # Cria um campo de texto para o usuário inserir seu nome
     txt_name = ft.TextField(label="Seu nome!", text_align='center', width='300')
 
-    # Cria um container para o logo
-    logo = ft.Container(
+    # Cria um container para o menu
+    menu = ft.Container(
         col={'xs': 12, 'md': 6},
         bgcolor="#7586a4",
         padding=ft.padding.all(30),
@@ -155,7 +155,7 @@ def solicitar_nome(page, *_):
         )
     )
 
-    # Cria o layout da página com o logo e o container do nome
+    # Cria o layout da página com o menu e o container do nome
     layout = ft.Container(
         width=1000,
         margin=ft.margin.all(30),
@@ -165,7 +165,7 @@ def solicitar_nome(page, *_):
             spacing=0,
             run_spacing=0,
             controls=[
-                logo,
+                menu,
                 nome,
             ]
         )
@@ -180,7 +180,9 @@ def solicitar_nome(page, *_):
 
 # Função para mostrar as ligas disponíveis
 def mostrar_ligas(page):
-    page.clean()  # Limpa a página antes de adicionar novos elementos
+
+    # Define a cor de fundo da página como preto
+    page.clean()
 
     # Função interna para lidar com o clique do botão
     def on_button_click(e, liga_id):
@@ -188,42 +190,113 @@ def mostrar_ligas(page):
         liga_selecionada = liga_id  # Armazena o ID da liga selecionada na variável global
         mostrar_anos(page)  # Chama a função mostrar_anos para atualizar a página com os anos disponíveis para a liga selecionada
 
-    # Adiciona um texto no topo da página
-    page.add(ft.Row([ft.Text(value="Escolha o campeonato!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER))
-
     # Lista para armazenar as linhas de botões
     linhas_de_botoes = []
-    botoes_temp = []  # Lista temporária para armazenar os botões antes de adicioná-los à linha
 
     # Itera sobre todas as ligas disponíveis
     for nome_liga, dados_liga in ligas.items():
         # Cria um botão personalizado com a imagem da liga e o nome da liga
-        botao_liga = ft.ElevatedButton(
-            text=nome_liga,
-            content=ft.Row([
-                ft.Image(src=dados_liga["URL"], width=80, height=80,),  # Adiciona a imagem da liga ao botão
-                ft.Text(nome_liga, color="black", size= 20)  # Adiciona o nome da liga ao botão
-            ]),
-            on_click=lambda e, liga_id=dados_liga["ID"]: on_button_click(e, liga_id),  # Define a ação do botão para chamar a função on_button_click com o ID da liga
-            width=300,
+        botao_liga = ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    ft.ElevatedButton(
+                        content=ft.Row([
+                            ft.Image(src=dados_liga['URL'], width=80, height=80),
+                            ft.Text(value=nome_liga,size=30, color='black')
+                        ]),
+                        on_click=lambda e, liga_id=dados_liga["ID"]: on_button_click(e, liga_id),
+                        width=400
+                    )
+                )
+            ]
         )
-        # Adiciona o botão à lista temporária
-        botoes_temp.append(botao_liga)
+        
+        linhas_de_botoes.append(botao_liga)
 
-        # Se tiver dois botões na lista temporária, cria uma nova linha e limpa a lista
-        if len(botoes_temp) == 2:
-            linhas_de_botoes.append(ft.Row(botoes_temp, alignment=ft.MainAxisAlignment.CENTER))  # Adiciona a linha de botões à lista de linhas
-            botoes_temp = []  # Limpa a lista temporária de botões
+    def botoes_liga():
+         # Adiciona todas as linhas de botões à página
+        return linhas_de_botoes # Adiciona a linha de botões à página
 
-    # Adiciona a última linha se houver botões restantes
-    if botoes_temp:
-        linhas_de_botoes.append(ft.Row(botoes_temp))  # Adiciona a linha de botões à lista de linhas
+    # Cria um campo de texto para o usuário inserir seu nome
+    txt_name = ft.TextField(label="Seu nome!", text_align='center', width='300')
 
-    # Adiciona todas as linhas de botões à página
-    for linha in linhas_de_botoes:
-        page.add(linha)  # Adiciona a linha de botões à página
-    
-    page.update()  # Atualiza a página para mostrar os novos elementos
+    # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="ESCOLHA O CAMPEONATO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
+
+    # Cria um container para o campo de texto e o botão
+    nome = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *botoes_liga()
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                nome,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para mostrar os anos
 def mostrar_anos(page):
