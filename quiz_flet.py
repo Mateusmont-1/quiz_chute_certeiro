@@ -9,6 +9,8 @@ import requests
 import random
 import json
 import time
+import os
+import datetime
 """
 Pode ser necesserio executar no terminal os comando
 pip install Flet
@@ -65,6 +67,7 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
     page.scroll = ft.ScrollMode.AUTO
+    
     solicitar_nome(page)  # Chamar a função para solicitar o nome do usuário
 
 # Função para solicitar o nome do usuário
@@ -84,7 +87,7 @@ def solicitar_nome(page, *_):
             # Se o campo de texto não estiver vazio, declara a variável global nome_usuario
             global nome_usuario
             # Armazena o nome do usuário na variável global
-            nome_usuario = txt_name.value.title()
+            nome_usuario = txt_name.value.title().strip()
             # Chama a função mostrar_ligas
             mostrar_ligas(page)
 
@@ -324,7 +327,7 @@ def mostrar_anos(page):
                         content=ft.Column([
                             ft.Text(value=ano,size=30, color='black',text_align='center'),
                         ]),
-                        on_click=lambda e, a= ano: on_button_click(e, ano),
+                        on_click=lambda e, a =ano: on_button_click(e, a),
                         width=200
                     )
                 )
@@ -594,7 +597,7 @@ def check_answer(page, user_choice, correct_answer):
         # Chamando a função 'manipulacao_txt' com a resposta errada
         manipulacao_txt(user_choice, f'errada a resposta correta era {correct_answer}')
         # Adicionando um texto na interface
-        texto_tela(page, f"Sua resposta está incorreta! A resposta era {correct_answer}!")
+        texto_tela(page, False,f"Sua resposta está incorreta! A resposta era {correct_answer}!")
 
     # Aguardando 2 segundos
     time.sleep(2)
@@ -608,27 +611,25 @@ def check_answer(page, user_choice, correct_answer):
         # Limpando a interface
         page.clean()
 
-        # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
-        with open('/log/resposta_quiz.txt', 'a') as adicionar:
-            adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} quiz\\n')
-    
         texto1 = "Fim do Quiz!"
         texto2 = "Você respondeu todas as categorias"
         # Verificando se o usuário acertou mais de uma questão
         if acertos >1:
-            texto3= f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
-            texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando um texto na interface
-    #         page.add(  
-    #     ft.Row([ft.Text(value=f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    # )
+            texto3= f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto_tela(page, True, texto1, texto2, texto3)  
+            # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
+            with open(caminho_arquivo, 'a') as adicionar:
+                adicionar.write(f'Parabens{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+
         else:
             # Adicionando um texto na interface
             texto3= f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões"
             texto_tela(page, True, texto1, texto2, texto3)
-    #         page.add(  
-    #     ft.Row([ft.Text(value=f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões", color="white",size=20),], alignment=ft.MainAxisAlignment.CENTER)
-    # )
+            # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
+            with open(caminho_arquivo, 'a') as adicionar:
+                adicionar.write(f'Parabens{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+
         # Aguardando 5 segundos
         time.sleep(5)
         # Fechando a janela
@@ -924,7 +925,7 @@ def confirmacao(page):
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open('/log/resposta_quiz.txt', 'a') as adicionar:
+    with open(caminho_arquivo, 'a') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')
@@ -937,13 +938,45 @@ def manipulacao_txt(user_choice, resultado):
             adicionar.write(f'A resposta escolhida foi {user_choice}\n')
             adicionar.write(f'A resposta está {resultado}!\n')
 
-# Tentando criar o arquivo 'resposta_quiz.txt', se ele ainda não existir
-try:
-    with open('/log/resposta_quiz.txt', 'x'):
-        pass
-    
-except FileExistsError:
-    pass
+def criar_arquivo_com_hora(nome_base):
+    """
+    Cria um arquivo de texto com o nome base concatenado com a hora atual,
+    dentro da pasta 'log' no diretório atual.
+
+    Args:
+        nome_base (str): Nome base para o arquivo (sem extensão).
+    """
+    try:
+        # Obtém a hora atual
+        hora_atual = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+        # Concatena a hora ao nome base
+        nome_arquivo = f"{nome_base}_{hora_atual}.txt"
+
+        # Obtém o caminho completo do diretório atual
+        diretorio_atual = os.getcwd()
+
+        # Caminho completo para a pasta 'log'
+        caminho_log = os.path.join(diretorio_atual, "assets", "log")
+
+        # Cria a pasta 'log' se ela não existir
+        if not os.path.exists(caminho_log):
+            os.makedirs(caminho_log)
+
+        # Caminho completo para o novo arquivo dentro da pasta 'log'
+        global caminho_arquivo
+        caminho_arquivo = os.path.join(caminho_log, nome_arquivo)
+
+        # Cria o arquivo vazio
+        with open(caminho_arquivo, 'w') as arquivo:
+            print(f"Arquivo '{nome_arquivo}' criado com sucesso em {caminho_log}")
+
+    except Exception as erro:
+        print(f"Erro ao criar o arquivo: {erro}")
+
+# Exemplo de uso da função
+nome_base_do_arquivo = "Chute_Certeiro"
+criar_arquivo_com_hora(nome_base_do_arquivo)
 
 # Iniciando o aplicativo com a função 'main' como alvo
 ft.app(target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
