@@ -218,9 +218,6 @@ def mostrar_ligas(page):
          # Adiciona todas as linhas de botões à página
         return linhas_de_botoes # Adiciona a linha de botões à página
 
-    # Cria um campo de texto para o usuário inserir seu nome
-    txt_name = ft.TextField(label="Seu nome!", text_align='center', width='300')
-
     # Cria um container para o menu
     menu = ft.Container(
         col={'xs': 12, 'md': 6},
@@ -253,7 +250,7 @@ def mostrar_ligas(page):
     )
 
     # Cria um container para o campo de texto e o botão
-    nome = ft.Container(
+    escolhe_campeonato = ft.Container(
         col={'xs': 12, 'md': 6},
         bgcolor=ft.colors.WHITE,
         padding=ft.padding.all(30),
@@ -287,7 +284,7 @@ def mostrar_ligas(page):
             run_spacing=0,
             controls=[
                 menu,
-                nome,
+                escolhe_campeonato,
             ]
         )
     )
@@ -303,11 +300,6 @@ def mostrar_anos(page):
     # Limpa a página
     page.clean()
 
-    # Adiciona um texto na página
-    page.add(  
-        ft.Row([ft.Text(value="Escolha o ano!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)
-    )
-
     # Função para lidar com o clique no botão
     def on_button_click(e, ano):
         global ano_selecionado
@@ -318,39 +310,110 @@ def mostrar_anos(page):
 
     # Lista para armazenar as linhas de botões
     linhas_de_botoes = []
-    # Lista temporária para armazenar os botões
-    botoes_temp = []
 
     # Define os anos
     anos = list(range(2016, 2024))
     # Itera sobre os anos
     for ano in anos:
-        # Cria um botão para cada ano
-        botao_ano = ft.ElevatedButton(
-            # Define a ação do clique no botão
-            on_click=lambda e, a= ano: on_button_click(e, a),
-            width=300,
-            # Define o conteúdo do botão
-            content=ft.Column([
-                ft.Text(value=ano, size=30, color="black"),
-                #alignment=ft.MainAxisAlignment.CENTER,
-            ])
+        # Cria um botão para cada ano   
+        botao_ano = ft.Row(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    ft.ElevatedButton(
+                        content=ft.Column([
+                            ft.Text(value=ano,size=30, color='black',text_align='center'),
+                        ]),
+                        on_click=lambda e, a= ano: on_button_click(e, ano),
+                        width=200
+                    )
+                )
+            ]
         )
+        
         # Adiciona o botão à lista temporária
-        botoes_temp.append(botao_ano)
+        linhas_de_botoes.append(botao_ano)
 
-        # Se tiver dois botões na lista temporária, cria uma nova linha e limpa a lista
-        if len(botoes_temp) == 2:
-            linhas_de_botoes.append(ft.Row(botoes_temp, alignment=ft.MainAxisAlignment.CENTER))
-            botoes_temp = []
+    def botoes_ano():
+         # Adiciona todas as linhas de botões à página
+        return linhas_de_botoes # Adiciona a linha de botões à página
     
-    # Adiciona a última linha se houver botões restantes
-    if botoes_temp:
-        linhas_de_botoes.append(ft.Row(botoes_temp))
+        # Cria um container para o menu
+    menu = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="ESCOLHA O ANO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
+    )
 
-    # Adiciona todas as linhas de botões à página
-    for linha in linhas_de_botoes:
-        page.add(linha)
+    # Cria um container para o campo de texto e o botão
+    escolhe_ano = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            *botoes_ano()
+                        ]
+                    )
+                )
+            ]
+        )
+    )
+
+
+    # Cria o layout da página com o menu e o container do nome
+    layout = ft.Container(
+        width=1300,
+        # height=900,
+        margin=ft.margin.all(20),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            columns=15,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                menu,
+                escolhe_ano,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
 
 # Função para iniciar o quiz na interface gráfica
 def start_quiz(page, category):  
