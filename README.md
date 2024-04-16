@@ -19,3 +19,25 @@ Este projeto foi feito no curso do SENAI - Ipiranga-SP referente a [Python](http
 - [Random](https://docs.python.org/pt-br/3/library/random.html)
 - [Json](https://docs.python.org/3/library/json.html)
 
+## Participantes do Projeto
+
+<table>
+	<tr>
+    	<td align="center">
+            <a href="https://github.com/Mateusmont-1">
+            <img src="https://avatars.githubusercontent.com/u/157054673?v=4" width="100px;" alt="Foto do Mateus Monteiro no GitHub"/><br>
+            <sub>
+                <a href="https://github.com/Mateusmont-1"> Mateus Monteiro</a>
+            </sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/FelipeHAC">
+            <img src="https://avatars.githubusercontent.com/u/164200405?v=4" width="100px;" alt="Foto do Felipe Antunes no GitHub"/><br>
+            <sub>
+                <a href="https://github.com/FelipeHAC"> Felipe Antunes</a>
+            </sub>
+            </a>
+        </td>
+    </tr>
+</table>
