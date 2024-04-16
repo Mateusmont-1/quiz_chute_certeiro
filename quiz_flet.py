@@ -64,37 +64,119 @@ def main(page: ft.Page):
     page.window_maximized = True  # Maximizar a janela
     page.vertical_alignment = ft.MainAxisAlignment.CENTER  # Alinhamento vertical ao centro
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # Alinhamento horizontal ao centro
+    page.scroll = ft.ScrollMode.AUTO
     solicitar_nome(page)  # Chamar a função para solicitar o nome do usuário
 
 # Função para solicitar o nome do usuário
 def solicitar_nome(page, *_):
-    # Limpar a janela principal
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    # Define a cor de fundo da página como preto
+    page.bgcolor = ft.colors.BLACK
 
-    # Função para lidar com o clique do botão
+    # Função interna que é chamada quando o botão é clicado
     def btn_click(e):
-        if not txt_name.value:  # Se o campo de texto estiver vazio
-            txt_name.error_text = "Por favor insira seu nome!"  # Mostrar mensagem de erro
-            page.update()  # Atualizar a página
-        else:  # Se o campo de texto não estiver vazio
-            global nome_usuario  # Declarar a variável global
+        # Verifica se o campo de texto está vazio
+        if not txt_name.value:
+            # Se estiver vazio, exibe uma mensagem de erro
+            txt_name.error_text = "Por favor insira seu nome!"
+            # Atualiza a página para mostrar a mensagem de erro
+            page.update()
+        else:
+            # Se o campo de texto não estiver vazio, declara a variável global nome_usuario
+            global nome_usuario
+            # Armazena o nome do usuário na variável global
+            nome_usuario = txt_name.value.title()
+            # Chama a função mostrar_ligas
+            mostrar_ligas(page)
 
-            nome_usuario = txt_name.value.title()  # Armazenar o nome do usuário
-            mostrar_ligas(page)  # Chamar a função para mostrar as ligas
+    # Cria um campo de texto para o usuário inserir seu nome
+    txt_name = ft.TextField(label="Seu nome!", text_align='center', width='300')
 
-    # Adicionando elementos à página
-    page.add(ft.Image(src="/images/logo.png", height=300, width=300,))  # Adicionar imagem
-    page.add(  
-        ft.Row([ft.Text(value="CHUTE CERTEIRO!", color="black",size=40),], alignment=ft.MainAxisAlignment.CENTER)  # Adicionar texto
+    # Cria um container para o logo
+    logo = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor="#7586a4",
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.Text(value="QUIZ - CHUTE CERTEIRO", size= 40, color="white")
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Image(
+                    src="/images/logo.png",
+                    width=300,
+                    height=300,
+                        )
+                    ]
+                ),
+            ]
+        )
     )
 
-    txt_name = ft.TextField(label="Por favor informe seu nome!", text_align='center', width='300')  # Criar campo de texto
+    # Cria um container para o campo de texto e o botão
+    nome = ft.Container(
+        col={'xs': 12, 'md': 6},
+        bgcolor=ft.colors.WHITE,
+        padding=ft.padding.all(30),
+        aspect_ratio=9/16,
+        content=ft.Column(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            txt_name
+                        )
+                    ]
+                ),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        ft.Container(
+                            ft.ElevatedButton(
+                                text='value',
+                                content=ft.Column([
+                                ft.Text(value='Confirmar', size=30, color="black"),]),
+                                on_click=btn_click)
+                        )
+                    ],
+                )
+            ]
+        )
+    )
 
-    # Adicionar campo de texto e botão à página
-    page.add(txt_name, ft.ElevatedButton(content=ft.Column([
-                ft.Text(value='Confirmar', size=30, color="black"),
-                #alignment=ft.MainAxisAlignment.CENTER,
-            ]),on_click=btn_click))
+    # Cria o layout da página com o logo e o container do nome
+    layout = ft.Container(
+        width=1000,
+        margin=ft.margin.all(30),
+        shadow=ft.BoxShadow(blur_radius=300, color=ft.colors.WHITE),
+        content=ft.ResponsiveRow(
+            columns=12,
+            spacing=0,
+            run_spacing=0,
+            controls=[
+                logo,
+                nome,
+            ]
+        )
+    )
+
+    # Adiciona o layout à página
+    page.add(layout)
+
+    # Atualiza a página
+    page.update
+
 
 # Função para mostrar as ligas disponíveis
 def mostrar_ligas(page):
@@ -507,4 +589,4 @@ except FileExistsError:
     pass
 
 # Iniciando o aplicativo com a função 'main' como alvo
-ft.app(target=main, assets_dir="assets")
+ft.app(target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
