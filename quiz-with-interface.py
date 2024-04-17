@@ -925,7 +925,7 @@ def confirmacao(page):
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open(caminho_arquivo, 'a') as adicionar:
+    with open(caminho_arquivo, 'a', encoding='utf-8') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')

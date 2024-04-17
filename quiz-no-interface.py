@@ -47,7 +47,7 @@ ligas = {
 
 def manipulacao_txt(categoria_quiz, user_choice, resultado):
 
-    with open(caminho_arquivo, 'a') as adicionar:
+    with open(caminho_arquivo, 'a', encoding='utf-8') as adicionar:
             adicionar.write(f'Nome do usuário: {nome}\n')
             adicionar.write(f'Liga escolhida: {liga}\n')
             adicionar.write(f'Ano escolhido: {ano}\n')
