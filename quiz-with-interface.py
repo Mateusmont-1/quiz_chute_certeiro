@@ -628,7 +628,7 @@ def check_answer(page, user_choice, correct_answer):
             texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
             with open(caminho_arquivo, 'a') as adicionar:
-                adicionar.write(f'Parabens{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+                adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
 
         # Aguardando 5 segundos
         time.sleep(5)
@@ -925,7 +925,7 @@ def confirmacao(page):
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open(caminho_arquivo, 'a', encoding='utf-8') as adicionar:
+    with open(caminho_arquivo , 'a', encoding='utf-8') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')

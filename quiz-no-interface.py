@@ -130,6 +130,8 @@ def quiz():
             break
         print("Ano inválido. Por favor, escolha um ano entre 2016 e 2023.")
 
+    global acertos
+    
     for categoria in categorias:
 
         liga_escolhida = ligas[liga]["ID"]
@@ -213,11 +215,13 @@ def quiz():
             manipulacao_txt(categoria, resposta, f"incorreta a resposta erá {correct_name}")
             print(f"Resposta errada. A resposta correta era: {correct_name}")
     
-    if acertos >1:
+    if acertos > 1:
         print(f"Parabens {nome} você acertou {acertos} questões")
         with open(caminho_arquivo, 'a') as adicionar:
             adicionar.write(f'Parabens {nome} você acertou {acertos} questões\n')
     else:
         print(f"{nome} você acertou {acertos} questões\n")
+        with open(caminho_arquivo, 'a') as adicionar:
+            adicionar.write(f'{nome} você acertou {acertos} questões\n')
 
 quiz()
