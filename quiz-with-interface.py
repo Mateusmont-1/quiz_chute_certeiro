@@ -1,16 +1,17 @@
 """
-Este é um programa de quiz de futebol que usa a API-FOOTBALL (https://rapidapi.com/api-sports/api/api-football/details) para obter dados sobre jogadores de várias ligas de futebol.
+Este é um programa de quiz de futebol que usa a API-FOOTBALL (https://rapidapi.com/api-sports/api/api-football/details). 
+Para obter dados sobre jogadores de várias ligas de futebol.
 O usuário pode escolher a liga e o ano do campeonato, e o programa irá gerar perguntas sobre os jogadores dessa liga e ano.
 As categorias do quiz incluem 'artilheiro', 'assistências' e 'cartões amarelos'.
 """
 # Importando as bibliotecas necessárias
-import flet as ft
-import requests
-import random
-import json
-import time
-import os
-import datetime
+import flet as ft # https://flet.dev/docs/
+import requests # https://pypi.org/project/requests/
+import random # https://docs.python.org/pt-br/3/library/random.html
+import json # https://docs.python.org/3/library/json.html
+import time # https://docs.python.org/3/library/time.html
+import os # https://docs.python.org/3/library/os.html
+import datetime # https://docs.python.org/3/library/datetime.html
 """
 Pode ser necesserio executar no terminal os comando
 pip install Flet
@@ -616,11 +617,11 @@ def check_answer(page, user_choice, correct_answer):
         # Verificando se o usuário acertou mais de uma questão
         if acertos >1:
             # Adicionando um texto na interface
-            texto3= f"Parabens {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
+            texto3= f"Parabéns {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
             texto_tela(page, True, texto1, texto2, texto3)  
             # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
             with open(caminho_arquivo, 'a') as adicionar:
-                adicionar.write(f'Parabens{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+                adicionar.write(f'Parabéns{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
 
         else:
             # Adicionando um texto na interface
@@ -628,7 +629,7 @@ def check_answer(page, user_choice, correct_answer):
             texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
             with open(caminho_arquivo, 'a') as adicionar:
-                adicionar.write(f'Parabens{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+                adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
 
         # Aguardando 5 segundos
         time.sleep(5)
@@ -925,7 +926,7 @@ def confirmacao(page):
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
-    with open(caminho_arquivo, 'a') as adicionar:
+    with open(caminho_arquivo , 'a', encoding='utf-8') as adicionar:
             adicionar.write(f'Nome do usuário: {nome_usuario}\n')
             adicionar.write(f'Liga escolhida: {chave_correspondente}\n')
             adicionar.write(f'Ano escolhido: {ano_selecionado}\n')
