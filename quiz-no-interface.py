@@ -219,6 +219,7 @@ def quiz():
         print(f"Parabéns {nome} você acertou {acertos} questões")
         with open(caminho_arquivo, 'a') as adicionar:
             adicionar.write(f'Parabéns {nome} você acertou {acertos} questões\n')
+
     else:
         print(f"{nome} você acertou {acertos} questões\n")
         with open(caminho_arquivo, 'a') as adicionar:
