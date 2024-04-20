@@ -1,9 +1,16 @@
 # Quiz utilizando o console para utilização
-
-import requests
-import random
-import datetime
-import os
+"""
+Este é um programa de quiz de futebol que usa a API-FOOTBALL (https://rapidapi.com/api-sports/api/api-football/details). 
+Para obter dados sobre jogadores de várias ligas de futebol.
+O usuário pode escolher a liga e o ano do campeonato, e o programa irá gerar perguntas sobre os jogadores dessa liga e ano.
+As categorias do quiz incluem 'artilheiro', 'assistências' e 'cartões amarelos'.
+"""
+# Importando as bibliotecas necessárias
+import requests # https://pypi.org/project/requests/
+import random # https://docs.python.org/pt-br/3/library/random.html
+import json # https://docs.python.org/3/library/json.html
+import os # https://docs.python.org/3/library/os.html
+import datetime # https://docs.python.org/3/library/datetime.html
 
 # Inicializando variaveis
 categorias = ['artilharia', 'assistências', 'cartões amarelos']
