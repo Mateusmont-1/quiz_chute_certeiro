@@ -216,9 +216,10 @@ def quiz():
             print(f"Resposta errada. A resposta correta era: {correct_name}")
     
     if acertos > 1:
-        print(f"Parabens {nome} você acertou {acertos} questões")
+        print(f"Parabéns {nome} você acertou {acertos} questões")
         with open(caminho_arquivo, 'a') as adicionar:
-            adicionar.write(f'Parabens {nome} você acertou {acertos} questões\n')
+            adicionar.write(f'Parabéns {nome} você acertou {acertos} questões\n')
+
     else:
         print(f"{nome} você acertou {acertos} questões\n")
         with open(caminho_arquivo, 'a') as adicionar:
