@@ -980,4 +980,4 @@ nome_base_do_arquivo = "Chute_Certeiro"
 criar_arquivo_com_hora(nome_base_do_arquivo)
 
 # Iniciando o aplicativo com a função 'main' como alvo
-ft.app(target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
+ft.app(port=51037, target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER

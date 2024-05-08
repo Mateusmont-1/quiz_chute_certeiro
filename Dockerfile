@@ -10,7 +10,7 @@ COPY . /app
 # Instale as dependências do aplicativo
 RUN pip install -r requirements.txt
 
-EXPOSE 8080 51037 8000
+EXPOSE 51037
 
 # Defina o ponto de entrada para o contêiner
 CMD ["python", "manage.py", "runserver", "0.0.0.0:51037"]
