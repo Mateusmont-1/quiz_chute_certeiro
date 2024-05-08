@@ -23,6 +23,7 @@ categorias = ['artilheiro', 'assistências', 'cartões amarelos'] # Definindo as
 random.shuffle(categorias) # Embaralhando as categorias para garantir que a ordem seja aleatória
 categoria_atual = 0 # Definindo a categoria atual como a primeira da lista embaralhada
 acertos = 0 # Inicializando a contagem de acertos
+porta_definida = 51037
 
 # Dicionário contendo as ligas de futebol disponíveis para o quiz
 ligas = {
@@ -590,13 +591,13 @@ def check_answer(page, user_choice, correct_answer):
         # Incrementando a variável 'acertos'
         acertos += 1
         # Chamando a função 'manipulacao_txt' com a resposta correta
-        manipulacao_txt(user_choice, 'correta')
+        #manipulacao_txt(user_choice, 'correta')
         # Adicionando um texto na interface
         texto_tela(page, False,"Sua resposta está correta!")
 
     else:
         # Chamando a função 'manipulacao_txt' com a resposta errada
-        manipulacao_txt(user_choice, f'errada a resposta correta era {correct_answer}')
+        #manipulacao_txt(user_choice, f'errada a resposta correta era {correct_answer}')
         # Adicionando um texto na interface
         texto_tela(page, False,f"Sua resposta está incorreta! A resposta era {correct_answer}!")
 
@@ -620,16 +621,16 @@ def check_answer(page, user_choice, correct_answer):
             texto3= f"Parabéns {nome_usuario} você acertou {acertos} de {len(categorias)} questões"
             texto_tela(page, True, texto1, texto2, texto3)  
             # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
-            with open(caminho_arquivo, 'a') as adicionar:
-                adicionar.write(f'Parabéns{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+            #with open(caminho_arquivo, 'a') as adicionar:
+                #adicionar.write(f'Parabéns{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
 
         else:
             # Adicionando um texto na interface
             texto3= f"{nome_usuario} você acertou {acertos} de {len(categorias)} questões"
             texto_tela(page, True, texto1, texto2, texto3)
             # Adicionando o resultado do quiz no arquivo 'resposta_quiz.txt'
-            with open(caminho_arquivo, 'a') as adicionar:
-                adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
+            #with open(caminho_arquivo, 'a') as adicionar:
+                #adicionar.write(f'{nome_usuario} você acertou: {acertos} de {len(categorias)} questões\n')
 
         # Aguardando 5 segundos
         time.sleep(5)
@@ -976,8 +977,8 @@ def criar_arquivo_com_hora(nome_base):
         print(f"Erro ao criar o arquivo: {erro}")
 
 # Exemplo de uso da função
-nome_base_do_arquivo = "Chute_Certeiro"
-criar_arquivo_com_hora(nome_base_do_arquivo)
+#nome_base_do_arquivo = "Chute_Certeiro"
+#criar_arquivo_com_hora(nome_base_do_arquivo)
 
 # Iniciando o aplicativo com a função 'main' como alvo
-ft.app(port=51037, target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
+ft.app(port=porta_definida, target=main, assets_dir="assets",) #caso queira rodar a aplicação WEB acrescentar view=ft.WEB_BROWSER
