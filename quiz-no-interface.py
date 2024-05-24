@@ -12,11 +12,6 @@ import json # https://docs.python.org/3/library/json.html
 import os # https://docs.python.org/3/library/os.html
 import datetime # https://docs.python.org/3/library/datetime.html
 
-# Inicializando variaveis
-categorias = ['artilharia', 'assistências', 'cartões amarelos']
-acertos = 0
-# Embaralhando as categorias para garantir que a ordem seja aleatória
-random.shuffle(categorias)
 ligas = {
     "Premier League": {
         "ID": 39,
@@ -104,9 +99,13 @@ def criar_arquivo_com_hora(nome_base):
     except Exception as erro:
         print(f"Erro ao criar o arquivo: {erro}")
 
-# Exemplo de uso da função
-nome_base_do_arquivo = "Chute_Certeiro_not_interface"
-criar_arquivo_com_hora(nome_base_do_arquivo)
+def ler_keys_api(caminho_arquivo):
+    try:
+        with open(caminho_arquivo, 'r', encoding='utf8') as arquivo:
+            dados = json.load(arquivo)
+    except FileNotFoundError:
+        print('Arquvio não encontrado')
+    return dados
 
 def quiz():
     
@@ -153,10 +152,9 @@ def quiz():
 
         url = f"https://api-football-v1.p.rapidapi.com/v3/players/{busca_api}"
         querystring = {"league": str(liga_escolhida), "season": str(ano_escolhido)}
-        headers = {
-            "X-RapidAPI-Key": "06f0c1d958mshcd70f7d1495b050p1b4cb5jsnd9f5e358c544",
-            "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-        }
+        
+            # Define os cabeçalhos da requisição  
+        headers = ler_keys_api(nome_arquivo_keys)
 
         try:
             response = requests.get(url, headers=headers, params=querystring)
@@ -230,5 +228,17 @@ def quiz():
         print(f"{nome} você acertou {acertos} questões\n")
         with open(caminho_arquivo, 'a') as adicionar:
             adicionar.write(f'{nome} você acertou {acertos} questões\n')
+
+
+# Inicializando variaveis
+categorias = ['artilharia', 'assistências', 'cartões amarelos']
+acertos = 0
+nome_arquivo_keys = "keys_api.json"
+nome_base_do_arquivo = "Chute_Certeiro_not_interface"
+# Embaralhando as categorias para garantir que a ordem seja aleatória
+random.shuffle(categorias)
+
+
+criar_arquivo_com_hora(nome_base_do_arquivo)
 
 quiz()

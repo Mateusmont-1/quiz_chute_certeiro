@@ -18,12 +18,6 @@ pip install Flet
 pip install requests
 """
 
-# Inicialização das variáveis
-categorias = ['artilheiro', 'assistências', 'cartões amarelos'] # Definindo as categorias do quiz
-random.shuffle(categorias) # Embaralhando as categorias para garantir que a ordem seja aleatória
-categoria_atual = 0 # Definindo a categoria atual como a primeira da lista embaralhada
-acertos = 0 # Inicializando a contagem de acertos
-
 # Dicionário contendo as ligas de futebol disponíveis para o quiz
 ligas = {
     "Premier League": {
@@ -459,11 +453,9 @@ def api_futebol():
     # Define os parâmetros da consulta
     querystring = {"league": str(liga_selecionada), "season": str(ano_selecionado)}
 
-    # Define os cabeçalhos da requisição
-    headers = {
-	    "X-RapidAPI-Key": "06f0c1d958mshcd70f7d1495b050p1b4cb5jsnd9f5e358c544",
-	    "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-    }
+    
+    # Define os cabeçalhos da requisição  
+    headers = ler_keys_api(nome_arquivo_keys)
 
     # Fazendo uma requisição GET para a URL especificada
     response = requests.get(url, headers=headers, params=querystring)
@@ -923,6 +915,16 @@ def confirmacao(page):
     # Atualiza a página
     page.update
 
+# Função para realizar leitura da key da API 
+def ler_keys_api(caminho_arquivo):
+    try:
+        with open(caminho_arquivo, 'r', encoding='utf8') as arquivo:
+            dados = json.load(arquivo)
+    except FileNotFoundError:
+        print('Arquvio não encontrado')
+    return dados
+
+
 # Função para manipular o arquivo de texto com as respostas do quiz
 def manipulacao_txt(user_choice, resultado):
 
@@ -975,8 +977,13 @@ def criar_arquivo_com_hora(nome_base):
     except Exception as erro:
         print(f"Erro ao criar o arquivo: {erro}")
 
-# Exemplo de uso da função
+# Inicialização das variáveis
+categorias = ['artilheiro', 'assistências', 'cartões amarelos'] # Definindo as categorias do quiz
+random.shuffle(categorias) # Embaralhando as categorias para garantir que a ordem seja aleatória
+categoria_atual = 0 # Definindo a categoria atual como a primeira da lista embaralhada
+acertos = 0 # Inicializando a contagem de acertos
 nome_base_do_arquivo = "Chute_Certeiro"
+nome_arquivo_keys = "keys_api.json"
 criar_arquivo_com_hora(nome_base_do_arquivo)
 
 # Iniciando o aplicativo com a função 'main' como alvo
