@@ -1,16 +1,30 @@
-# Use a imagem oficial do Python como base
-FROM python:3.8
+# Use a imagem oficial do Python
+FROM python:3.9-slim
 
-# Defina o diretório de trabalho no contêiner
+# Define o fuso horário para São Paulo
+ENV TZ=America/Sao_Paulo
+
+# Instale as dependências do sistema operacional necessárias para definir o fuso horário
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copie os arquivos do aplicativo para o diretório de trabalho
-COPY . /app
+# Copie o conteúdo do diretório atual (onde está o Dockerfile) para o diretório de trabalho no contêiner,
+# exceto a pasta venv
+COPY main.py /app/
+COPY assets /app/assets/
+COPY requirements.txt /app/
 
-# Instale as dependências do aplicativo
+# Instale as dependências Python
 RUN pip install -r requirements.txt
 
-EXPOSE 51037
+# Exponha a porta 8080
+EXPOSE 8080
 
-# Defina o ponto de entrada para o contêiner
-CMD ["python", "manage.py", "runserver", "0.0.0.0:51037"]
+# Comando para iniciar sua aplicação
+CMD ["python", "quiz-with-interface.py"]
+
+
+# Não esquecer de criar a network antes de ativar os docker
+# docker network create my_network

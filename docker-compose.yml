@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quiz_futebol
+    restart: always
+    ports:
+      - "1001:8080"
+    env_file:  # Adicionado para carregar variáveis de ambiente de um arquivo .env
+      - .env
