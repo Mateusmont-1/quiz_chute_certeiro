@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Copie o conteúdo do diretório atual (onde está o Dockerfile) para o diretório de trabalho no contêiner,
 # exceto a pasta venv
-COPY main.py /app/
+COPY quiz-with-interface.py /app/
 COPY assets /app/assets/
 COPY requirements.txt /app/
 
