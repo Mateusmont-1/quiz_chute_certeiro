@@ -9,5 +9,7 @@ services:
     restart: always
     ports:
       - "1001:8080"
-    env_file:  # Adicionado para carregar variáveis de ambiente de um arquivo .env
+    env_file:
       - .env
+    volumes:
+      - ./logs:/app/assets/log

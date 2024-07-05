@@ -15,6 +15,7 @@ WORKDIR /app
 COPY quiz-with-interface.py /app/
 COPY assets /app/assets/
 COPY requirements.txt /app/
+COPY keys_api.json /app/
 
 # Instale as dependências Python
 RUN pip install -r requirements.txt

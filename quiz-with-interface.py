@@ -248,6 +248,15 @@ def verificar_arquivo_interacoes():
     if not os.path.exists(diretorio_log):
         os.makedirs(diretorio_log)
     caminho_arquivo = os.path.join(diretorio_log, f"interacoes_{hoje}.txt")
+    deletar_arquivos_antigos(diretorio_log, hoje)
+
+def deletar_arquivos_antigos(diretorio_log, data_atual):
+    for arquivo in os.listdir(diretorio_log):
+        caminho_completo = os.path.join(diretorio_log, arquivo)
+        if os.path.isfile(caminho_completo):
+            data_arquivo = arquivo.split('_')[-1].replace('.txt', '')
+            if data_arquivo != data_atual:
+                os.remove(caminho_completo)
 
 def interacoes_restantes():
     if not os.path.exists(caminho_arquivo):
